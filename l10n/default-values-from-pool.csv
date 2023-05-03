@@ -1,0 +1,29 @@
+key,de-DE,en-US
+defaultvaluesfrompool.pool.manager.default.values.tab.headline,Standardwerte,Default values
+show.pool.default.values.in.mask.name,Standardwert aus Pool,Default value from pool
+show.pool.default.values.in.mask.title|text,Standardwert aus Pool anzeigen,Show default value from pool
+mask.splitter.panel.spliter_name.show-pool-default-values-in-mask-end|text,Ende Standardwert-Splitter,End of default value splitter
+show.pool.info.in.mask.nameofdefaultInfoLinkFromPool,Zugehörige Standardinformation aus dem Pool,Matching default information from pool
+fylr-plugin-default-values-from-pool-default-value.splitter.hint,Standardwert,Default value
+fylr-plugin-default-values-from-pool-default-value.splitter.placeholder,Eigenen Wert setzen & Standard überschreiben,Set custom value & overwrite default
+fylr-plugin-default-values-from-pool-default-value-remove-custom-value,Individuellen Wert entfernen,Remove individual value
+
+
+server.config.name.system.DefaultValuesFromPool,Felder definieren,Define fields
+server.config.parameter.system.DefaultValuesFromPool.default_value_field_definitor.label,Konfiguration der Felder für die Standardwertefestlegungen in der Poolkonfiguration,Configuration of the fields for the default values definitions in the pool configuration
+defaultvaluefielddefinitor.data_table.objecttype,Objekttyp,Objecttype
+defaultvaluefielddefinitor.data_table.label,Label,Label
+defaultvaluefielddefinitor.data_table.fieldname,Feldname (intern),Fieldname (internal)
+defaultvaluefielddefinitor.data_table.fieldtype,Feldtyp,Fieldtype
+defaultvaluefielddefinitor.data_table.dantevoc,DANTE-Vokabular (falls zutreffend),DANTE-Vocabulary (if applicable)
+defaultvaluefielddefinitor.data_table.dantemode,DANTE-Plugin-Modus (falls zutreffend),DANTE-Plugin-Mode (if applicable)
+
+defaultvaluefielddefinitor.data_table.fieldtype.input,Text (einzeilig),Text (oneliner)
+defaultvaluefielddefinitor.data_table.fieldtype.dante,DANTE-Plugin,DANTE-Plugin
+
+defaultvaluefielddefinitor.data_table.dantemode.empty,Ohne,Without
+defaultvaluefielddefinitor.data_table.dantemode.dropdown,Dropdown,Dropdown
+defaultvaluefielddefinitor.data_table.dantemode.popover,Popover,Popover
+defaultvaluefielddefinitor.data_table.dantemode.treeview,Popover mit Baumansicht,Popover with Treeview
+
+fylr-plugin-default-values-from-pool.options.empty_save,Die Optionen werden erst nach dem Speichern sichtbar,The options only become visible after saving

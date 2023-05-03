@@ -1,0 +1,46 @@
+.cui-vertical-layout.fylr-plugin-default-values-from-pool {
+}
+
+/* Editor */
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-header {
+  padding: 8px 4px 0px 4px;
+  font-weight: bold;
+}
+
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-default-value {
+  padding: 4px 9px 4px 4px;
+  border-radius: 2px;
+  margin-top: 8px;
+  color: black;
+  display: none;
+}
+
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-default-value.show {
+  display: block;
+}
+
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-input-layout {
+  margin-top: 7px;
+}
+
+/* Editor: X-Button */
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-x-button {
+  display: none;
+}
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-x-button.show {
+  display: block;
+}
+
+/* Detail*/
+.fylr-plugin-default-values-from-pool.detailmode .fylr-plugin-default-values-from-pool-header {
+  color: #333333;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.fylr-plugin-default-values-from-pool.detailmode .fylr-plugin-default-values-from-pool-default-value {
+  border-radius: 2px;
+  margin-top: 2px;
+  margin-bottom: 7px;
+  color: #333333;
+}

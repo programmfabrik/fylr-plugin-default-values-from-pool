@@ -1,0 +1,25 @@
+plugin:
+  name: default-values-from-pool
+  version: 1.0
+  l10n: l10n/default-values-from-pool.csv
+  displayname:
+    de-DE: Standardwerte im Pool festlegen
+    en-US: Set defaultvalues in pool
+  info:
+    de-DE: Konfiguriere Standardfelder in der Baseconfig, die per Pool definiert und dann in Masken integriert werden können.
+    en-US: Configure standard fields in the baseconfig, which can be defined per pool and then integrated into masks.
+  webfrontend:
+    url: default-values-from-pool.js
+    css: default-values-from-pool.css
+
+base_url_prefix: "webfrontend"
+
+base_config:
+  - name: DefaultValuesFromPool
+    group: defaultvaluesfrompool
+    parameters:
+      default_value_field_definitor:
+        type: text
+        plugin_type: default-value-field-definitor
+        store_as_json: true
+        position: 1
