@@ -160,7 +160,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
             hasValue = false
             if opts.data[field.ColumnSchema.name]
               hasValue = true
-              if opts.data[field.ColumnSchema.name]?.conceptURI == '' || opts.data[field.ColumnSchema.name]?.conceptURI == null
+              if ! opts.data[field.ColumnSchema.name]?.conceptURI || opts.data[field.ColumnSchema.name]?.conceptURI == '' || opts.data[field.ColumnSchema.name]?.conceptURI == null
                 opts.data[field.ColumnSchema.name] = {}
                 hasValue = false
 
