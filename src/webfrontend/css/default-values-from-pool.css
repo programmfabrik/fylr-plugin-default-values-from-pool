@@ -31,6 +31,11 @@
   display: block;
 }
 
+.fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-x-button.noxbutton, .fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-x-button.shownoxbutton, .fylr-plugin-default-values-from-pool.editormode .fylr-plugin-default-values-from-pool-x-button.hiddennoxbutton{
+  display: none !important;
+}
+
+
 /* Detail*/
 .fylr-plugin-default-values-from-pool.detailmode .fylr-plugin-default-values-from-pool-header {
   color: #333333;

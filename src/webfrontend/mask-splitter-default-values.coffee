@@ -84,19 +84,32 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
             labelClassHidden = 'show'
             buttonClassHidden = 'hidden'
 
+        # if dante-popover or dante-treeview => Don't use the xbutton
+        noxbuttonuseclass = ''
+        # check if it is popover / treeview
+        checkForDropdown = CUI.dom.matchSelector(selectedElement, ".customPluginEditorLayout.dropdown")[0]
+        checkForInput = CUI.dom.matchSelector(selectedElement, ".cui-input.cui-data-field")[0]
+        checkForDANTEInput = CUI.dom.matchSelector(selectedElement, ".pluginDirectSelectEditInput")[0]
+        if ! checkForDropdown && ! checkForInput
+          noxbuttonuseclass = 'noxbutton'
+        if checkForDANTEInput
+          noxbuttonuseclass = 'noxbutton'
+
         # x-button for splitter-layout
         xButton = new CUI.Button
-          class: 'fylr-plugin-default-values-from-pool-x-button ' + buttonClassHidden
+          class: 'fylr-plugin-default-values-from-pool-x-button ' + buttonClassHidden + noxbuttonuseclass
           icon_left: new CUI.Icon(class: "fa-times")
           tooltip:
             text: $$('fylr-plugin-default-values-from-pool-default-value-remove-custom-value')
           onClick: (evt,button) =>
-            opts.data[field.ColumnSchema.name] = null
             # clear value of field
             dataField = CUI.dom.matchSelector(selectedElement, ".cui-data-field")[0]
             domData = CUI.dom.data(dataField, "element")
-            # if dante
+
+            # get type
             type = domData.__cls
+
+            # if dante
             if type == 'Form'
               domData.unsetData()
               domData.opts.data = {}
@@ -110,6 +123,10 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
               CUI.Events.trigger
                 type: 'editor-changed'
                 node: domData
+                bubble: true
+              CUI.Events.trigger
+                type: 'data-changed'
+                node: selectedElement
                 bubble: true
 
             # if text_oneline
@@ -160,9 +177,12 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
             hasValue = false
             if opts.data[field.ColumnSchema.name]
               hasValue = true
-              if ! opts.data[field.ColumnSchema.name]?.conceptURI || opts.data[field.ColumnSchema.name]?.conceptURI == '' || opts.data[field.ColumnSchema.name]?.conceptURI == null
-                opts.data[field.ColumnSchema.name] = {}
+              if opts.data[field.ColumnSchema.name] == null
                 hasValue = false
+              if typeof opts.data[field.ColumnSchema.name] == 'object'
+                if ! opts.data[field.ColumnSchema.name]?.conceptURI
+                  opts.data[field.ColumnSchema.name] = {}
+                  hasValue = false
 
             if hasValue
               # show button

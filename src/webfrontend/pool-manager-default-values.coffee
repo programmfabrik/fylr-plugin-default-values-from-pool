@@ -36,16 +36,22 @@ class ez5.PoolManagerDefaultValues extends ez5.PoolPlugin
             element: ((field) ->
               return (datafield) ->
                 data = datafield.getData()
+
+                #dataFieldNode = CUI.dom.matchSelector(datafield.DOM, ".cui-data-field")
+                dataFieldNode = datafield.getDataFields()[0]
                 dante = new CustomDataTypeDANTE
                 opts = {
                   data: data
                   name: datafield.getName()
                   callfrompoolmanager: true
+                  initialcallfrompoolmanager: true
                   editorstyle: field.dantemode
                   voc: field.dantevoc
+                  datafieldproxy: dataFieldNode
                 }
+                console.log "opts for dante-plugin", opts
                 # clone opts, because of async
-                optsClone = JSON.parse(JSON.stringify(opts))
+                optsClone = CUI.util.copyObject(opts)
                 value = dante.renderEditorInput(data, {}, optsClone)
                 return value
             )(JSON.parse(JSON.stringify(field)))
