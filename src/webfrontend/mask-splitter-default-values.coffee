@@ -18,10 +18,14 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     that = @
 
     # get objecttype-name
-    objecttype = opts.top_level_data._objecttype
-
-    # Gruppeneditor? --> den Splitter nicht nutzen
+    objecttype = opts.top_level_data?._objecttype
+    
+    # Gruppeneditor --> den Splitter nicht nutzen
     if opts.bulk && opts.mode == "editor-bulk"
+      return CUI.dom.append(@renderInnerFields(opts))
+
+    # Expertensuche --> den Splitter nicht nutzen
+    if opts.mode == "expert"
       return CUI.dom.append(@renderInnerFields(opts))
 
     # Keine PoolID vergeben? -->  den Splitter nicht nutzen
