@@ -19,7 +19,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
 
     # get objecttype-name
     objecttype = opts.top_level_data?._objecttype
-    
+
     # Gruppeneditor --> den Splitter nicht nutzen
     if opts.bulk && opts.mode == "editor-bulk"
       return CUI.dom.append(@renderInnerFields(opts))
@@ -35,6 +35,9 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
 
     # poolid natürlich entsprechend oben auslesen und unten einsetzen
     poolInfo = ez5.pools.findPoolById(poolID)
+
+    if ! poolInfo
+      return CUI.dom.append(@renderInnerFields(opts))
 
     customDataFromPool = poolInfo.data.pool.custom_data
 
