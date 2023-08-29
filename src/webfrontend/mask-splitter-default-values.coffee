@@ -87,7 +87,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
           labelClassHidden = 'hidden'
 
           # if field has no value, show default value and hide button
-          if opts.data[field.ColumnSchema.name] == null || (typeof opts.data[field.ColumnSchema.name] == 'object' && ! opts.data[field.ColumnSchema.name]?.conceptURI) || (opts.data[field.ColumnSchema.name] == '')
+          if opts.data[field.ColumnSchema.name] == {} || opts.data[field.ColumnSchema.name] == null || (typeof opts.data[field.ColumnSchema.name] == 'object' && ! opts.data[field.ColumnSchema.name]?.conceptURI) || (opts.data[field.ColumnSchema.name] == '')
             labelClassHidden = 'show'
             buttonClassHidden = 'hidden'
 
@@ -175,16 +175,37 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
                         right:
                           content: xButton
 
-        # listen for changes in field
+
+        ####################################################################
+        # listen for changes in customdatafields
+        # reset customdataform via another plugin (f.e. fylr-editor-field-visibility)
+        ####################################################################
+        customDataTypeNode = CUI.dom.matchSelector(selectedElement, ".customPluginEditorLayout")
+
+        # if dante-dropdown-mode
+        if customDataTypeNode.length == 0
+          customDataTypeNode = CUI.dom.matchSelector(selectedElement, ".dante_InlineSelect")
+
+        if customDataTypeNode
+          CUI.Events.listen
+            type: ["custom-deleteDataFromPlugin"]
+            node: customDataTypeNode[0]
+            call: (ev, info) =>
+                # hide button
+                CUI.dom.removeClass(xButton, 'show')
+                # hide default value
+                CUI.dom.addClass(defaultLabelElement, 'show')
+
+        # listen for changes in field and show or hide buttons
         CUI.Events.listen
           type: ["data-changed"]
-          node: selectedElement
+          node: selectedElement[0]
           call: (ev, info) =>
             # if value is not empty, hide default value and show button
             hasValue = false
             if opts.data[field.ColumnSchema.name]
               hasValue = true
-              if opts.data[field.ColumnSchema.name] == null
+              if opts.data[field.ColumnSchema.name] == null || opts.data[field.ColumnSchema.name] == {}
                 hasValue = false
               if typeof opts.data[field.ColumnSchema.name] == 'object'
                 if ! opts.data[field.ColumnSchema.name]?.conceptURI
@@ -298,7 +319,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     if ! fieldsFound
       fieldOptions = []
       emptyOption =
-          value : null
+          value : {}
           text : $$('fylr-plugin-default-values-from-pool.options.empty_save')
 
       fieldOptions.push emptyOption
