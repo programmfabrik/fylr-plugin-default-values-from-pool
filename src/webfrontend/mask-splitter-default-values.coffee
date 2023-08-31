@@ -17,6 +17,10 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
   renderField: (opts) ->
     that = @
 
+    CUI.Events.registerEvent
+      type: "custom-deleteDataFromPlugin"
+      bubble: false
+
     # get objecttype-name
     objecttype = opts.top_level_data?._objecttype
 
@@ -227,10 +231,6 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
               type: 'editor-changed'
               node: selectedElement
               bubble: true
-
-        CUI.Events.registerEvent
-          type: "custom-deleteDataFromPlugin"
-          bubble: false
 
         return CUI.dom.append(verticalLayout)
 
