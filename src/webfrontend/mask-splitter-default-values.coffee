@@ -62,7 +62,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     # EDITOR-Mode
     #####################################################################################
 
-    if opts.mode == "editor" || opts.mode == "editor-bulk"
+    if opts.mode == "editor" || opts.mode == "editor-bulk" || opts.mode == "editor-template"
       if fields
         field = fields[0]
 
