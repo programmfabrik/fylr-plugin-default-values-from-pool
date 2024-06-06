@@ -279,12 +279,6 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         if isDefaultValue
           cuiLabelLabel = cuiLabelLabel + ' (' + $$('fylr-plugin-default-values-from-pool-default-value.splitter.hint') + ')'
 
-        console.log "fieldLabel", fieldLabel
-        console.log "typeof fieldLabel", typeof fieldLabel
-        
-        console.log "cuiLabelLabel", cuiLabelLabel
-        console.log "typeof cuiLabelLabel", typeof cuiLabelLabel
-        
         unless typeof cuiLabelLabel is 'string'
             cuiLabelLabel = '(' + $$('fylr-plugin-default-values-from-pool-default-value.splitter.hint') + ')'
             
