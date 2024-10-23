@@ -5,7 +5,8 @@ class ez5.PoolManagerDefaultValues extends ez5.PoolPlugin
     baseConfig = ez5.session.getBaseConfig("plugin", "default-values-from-pool")
     config = baseConfig['DefaultValuesFromPool']['default_value_field_definitor'] || baseConfig['DefaultValuesFromPool']
     if config
-      config = JSON.parse config
+      if typeof config is 'string'
+        config = JSON.parse config
       @config = config
 
     if !config or !config.data_table
