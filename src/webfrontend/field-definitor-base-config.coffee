@@ -56,7 +56,6 @@ class DefaultValueFieldDefinitorBaseConfig extends BaseConfigPlugin
           form:
             label: $$("defaultvaluefielddefinitor.data_table.dantevoc")
           type: CUI.Input
-          text: $$("defaultvaluefielddefinitor.data_table.dantevoc.label")
           name: "dantevoc"
         ,
           form:
