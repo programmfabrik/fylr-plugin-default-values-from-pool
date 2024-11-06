@@ -62,7 +62,13 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     # EDITOR-Mode
     #####################################################################################
 
-    if opts.mode == "editor" || opts.mode == "editor-bulk" || opts.mode == "editor-template"
+    # is the splitter in an nested summary?
+    console.log "opts", opts
+    isInSummary = false
+    if opts?.__is_in_nested_summary
+      isInSummary = opts.__is_in_nested_summary
+
+    if (opts.mode == "editor" || opts.mode == "editor-bulk" || opts.mode == "editor-template") && (!isInSummary)
       if fields
         field = fields[0]
 
@@ -238,7 +244,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     # DETAIL-Mode
     #####################################################################################
 
-    if opts.mode == "detail"
+    if opts.mode == "detail" || isInSummary == true
       if fields
         field = fields[0]
 
