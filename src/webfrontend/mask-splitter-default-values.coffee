@@ -63,7 +63,6 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     #####################################################################################
 
     # is the splitter in an nested summary?
-    console.log "opts", opts
     isInSummary = false
     if opts?.__is_in_nested_summary
       isInSummary = opts.__is_in_nested_summary
