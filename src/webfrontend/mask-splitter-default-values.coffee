@@ -15,6 +15,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     return true
 
   renderField: (opts) ->
+
     that = @
 
     CUI.Events.registerEvent
@@ -24,24 +25,29 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     # get objecttype-name
     objecttype = opts.top_level_data?._objecttype
 
-    # Gruppeneditor --> den Splitter nicht nutzen
-    if opts.bulk && opts.mode == "editor-bulk"
-      return CUI.dom.append(@renderInnerFields(opts))
+    # is splitter in summary of popover-mode?
+    isInSummary = false
+    if opts?.__is_in_nested_summary
+      isInSummary = opts.__is_in_nested_summary
 
-    # Expertensuche --> den Splitter nicht nutzen
-    if opts.mode == "expert"
-      return CUI.dom.append(@renderInnerFields(opts))
+    # poolid
+    poolID = false
+    if opts?.top_level_data
+      if opts?.top_level_data[objecttype]
+        if opts?.top_level_data[objecttype]?._pool?.pool?._id
+          poolID = opts?.top_level_data[objecttype]?._pool?.pool?._id
 
-    # Keine PoolID vergeben? -->  den Splitter nicht nutzen
-    poolID = opts.top_level_data[objecttype]?._pool?.pool?._id
-    if ! poolID
-      return CUI.dom.append(@renderInnerFields(opts))
+    # Gruppeneditor / Expertensuche / nested summary / keine poolID --> den Splitter nicht nutzen
+    if (opts.bulk && opts.mode == "editor-bulk") || opts.mode == "expert" || isInSummary || !poolID
+      div = CUI.dom.element("div", class: "fylr-plugin-default-values-from-pool" )
+      return CUI.dom.append(div, @renderInnerFields(opts))
 
     # poolid natürlich entsprechend oben auslesen und unten einsetzen
     poolInfo = ez5.pools.findPoolById(poolID)
-
-    if ! poolInfo
-      return CUI.dom.append(@renderInnerFields(opts))
+    # poolinfo da?
+    if !poolInfo
+      div = CUI.dom.element("div", class: "fylr-plugin-default-values-from-pool" )
+      return CUI.dom.append(div, @renderInnerFields(opts))
 
     customDataFromPool = poolInfo.data.pool.custom_data
 
@@ -80,7 +86,6 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         copiedFieldnameBlock = fieldnameblock.cloneNode(true)
 
         selectedElement.querySelector('.ez5-field-block-header').style.display = 'none'
-
         # in input einen placeholder setzen
         testForInput = selectedElement.querySelector('.cui-input input')
         if testForInput
@@ -175,14 +180,14 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
             content: defaultLabelElement
           bottom:
             content:
-                      new CUI.HorizontalLayout
-                        class:  "fylr-plugin-default-values-from-pool-input-layout"
-                        left:
-                          content: ''
-                        center:
-                          content: innerFieldsCollection
-                        right:
-                          content: xButton
+              new CUI.HorizontalLayout
+                class:  "fylr-plugin-default-values-from-pool-input-layout"
+                left:
+                  content: ''
+                center:
+                  content: innerFieldsCollection
+                right:
+                  content: xButton
 
 
         ####################################################################
@@ -237,7 +242,9 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
               node: selectedElement
               bubble: true
 
-        return CUI.dom.append(verticalLayout)
+        div = CUI.dom.element("div", class: "fylr-plugin-default-values-from-pool" )
+        return CUI.dom.append(div, verticalLayout)
+        
 
     #####################################################################################
     # DETAIL-Mode
@@ -298,11 +305,9 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
                        text: cuiLabelLabel
                        class: 'fylr-plugin-default-values-from-pool-default-value'
 
-        return CUI.dom.append(verticalLayout)
-
+        div = CUI.dom.element("div", class: "fylr-plugin-default-values-from-pool" )
+        return CUI.dom.append(div, verticalLayout)
     return
-
-    #return innerFields
 
   getOptions: ->
     # get available fields from baseconfig and choose only those, who match the objecttype
