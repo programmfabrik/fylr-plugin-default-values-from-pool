@@ -18,8 +18,11 @@ defaultvaluefielddefinitor.data_table.fieldtype,Feldtyp,Fieldtype
 defaultvaluefielddefinitor.data_table.dantevoc,DANTE-Vokabular (falls zutreffend),DANTE-Vocabulary (if applicable)
 defaultvaluefielddefinitor.data_table.dantemode,DANTE-Plugin-Modus (falls zutreffend),DANTE-Plugin-Mode (if applicable)
 
+defaultvaluefielddefinitor.data_table.fieldname_datamodel,Datenmodell-Feldname (bei Typ=Objekttyp),Datamodel fieldname (if type=objecttype)
+
 defaultvaluefielddefinitor.data_table.fieldtype.input,Text (einzeilig),Text (oneliner)
 defaultvaluefielddefinitor.data_table.fieldtype.dante,DANTE-Plugin,DANTE-Plugin
+defaultvaluefielddefinitor.data_table.fieldtype.record,Datensatz,Record
 
 defaultvaluefielddefinitor.data_table.dantemode.empty,Ohne,Without
 defaultvaluefielddefinitor.data_table.dantemode.dropdown,Dropdown,Dropdown

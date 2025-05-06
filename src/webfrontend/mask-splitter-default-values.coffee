@@ -60,6 +60,13 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         defaultValueFromPool = entry
         if typeof defaultValueFromPool == 'object'
           defaultValueFromPool = defaultValueFromPool?.conceptName
+          if !defaultValueFromPool
+            if entry?._standard?[1].text
+              # try in active frontendlanguage
+              defaultValueFromPool = entry?._standard[1]?.text[ez5.loca.getLanguage()]
+              # else get first language
+              if !defaultValueFromPool
+                defaultValueFromPool = entry?._standard[1]?.text[Object.keys(entry._standard[1].text)[0]]
 
     fieldsRendererPlain = @__customFieldsRenderer.fields[0]
     fields = fieldsRendererPlain.getFields() or []
@@ -79,6 +86,9 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
 
         innerFieldsCollection = @renderInnerFields(opts)
 
+        if innerFieldsCollection.length == 0
+          return
+
         selectedElement = innerFieldsCollection.item(0)
 
         fieldnameblock = selectedElement.querySelector('.ez5-field-block-header')
@@ -95,6 +105,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         # wenn Feld einen Wert hat, dann Standardwert nicht anzeigen
         buttonClassHidden = ''
         labelClassHidden = 'show'
+
         if opts.data[field.ColumnSchema.name]
           # if field has value, show x-button and hide defaultvalue from pool
           buttonClassHidden = 'show'
@@ -103,14 +114,21 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
           # if field has no value, show default value and hide button
           if opts.data[field.ColumnSchema.name] == {} || opts.data[field.ColumnSchema.name] == null || (typeof opts.data[field.ColumnSchema.name] == 'object' && ! opts.data[field.ColumnSchema.name]?.conceptURI) || (opts.data[field.ColumnSchema.name] == '')
             labelClassHidden = 'show'
-            buttonClassHidden = 'hidden'
+            buttonClassHidden = 'hidden'     
 
-        # if dante-popover or dante-treeview => Don't use the xbutton
+          # linkedobjecttype
+          if opts.data[field.ColumnSchema.name]?._standard
+            buttonClassHidden = 'show'
+            labelClassHidden = 'hidden'
+
+        # if dante-popover or dante-treeview or objecttype => Don't use the xbutton
         noxbuttonuseclass = ''
         # check if it is popover / treeview
         checkForDropdown = CUI.dom.matchSelector(selectedElement, ".customPluginEditorLayout.dropdown")[0]
         checkForInput = CUI.dom.matchSelector(selectedElement, ".cui-input.cui-data-field")[0]
         checkForDANTEInput = CUI.dom.matchSelector(selectedElement, ".pluginDirectSelectEditInput")[0]
+        checkForLinkedObjecttype = CUI.dom.matchSelector(selectedElement, ".ez-linked-object-edit-object")[0]
+
         if ! checkForDropdown && ! checkForInput
           noxbuttonuseclass = 'noxbutton'
         if checkForDANTEInput
@@ -130,7 +148,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
             # get type
             type = domData.__cls
 
-            # if dante
+            # if dante or objecttype
             if type == 'Form'
               domData.unsetData()
               domData.opts.data = {}
@@ -211,9 +229,15 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
                 CUI.dom.addClass(defaultLabelElement, 'show')
 
         # listen for changes in field and show or hide buttons
+        if selectedElement[0]
+          selectedNode = selectedElement[0]
+        else 
+          selectedNode = selectedElement
+
+        # dante and input
         CUI.Events.listen
           type: ["data-changed"]
-          node: selectedElement[0]
+          node: selectedNode
           call: (ev, info) =>
             # if value is not empty, hide default value and show button
             hasValue = false
@@ -221,10 +245,6 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
               hasValue = true
               if opts.data[field.ColumnSchema.name] == null || opts.data[field.ColumnSchema.name] == {}
                 hasValue = false
-              if typeof opts.data[field.ColumnSchema.name] == 'object'
-                if ! opts.data[field.ColumnSchema.name]?.conceptURI
-                  opts.data[field.ColumnSchema.name] = {}
-                  hasValue = false
 
             if hasValue
               # show button
@@ -242,6 +262,30 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
               node: selectedElement
               bubble: true
 
+        # linkedobjecttype
+        CUI.Events.listen
+          type: ["editor-changed"]
+          node: selectedNode
+          call: (ev, info) =>
+            # if value is not empty, hide default value and show button
+            hasValue = false
+            if opts.data[field.ColumnSchema.name]
+              hasValue = true
+              if opts.data[field.ColumnSchema.name] == null || opts.data[field.ColumnSchema.name] == {}
+                hasValue = false
+
+            if hasValue
+              # show button
+              CUI.dom.addClass(xButton, 'show')
+              # show default value
+              CUI.dom.removeClass(defaultLabelElement, 'show')
+            else
+              # hide button
+              CUI.dom.removeClass(xButton, 'show')
+              # hide default value
+              CUI.dom.addClass(defaultLabelElement, 'show')
+
+
         div = CUI.dom.element("div", class: "fylr-plugin-default-values-from-pool" )
         return CUI.dom.append(div, verticalLayout)
         
@@ -253,6 +297,9 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
     if opts.mode == "detail" || isInSummary == true
       if fields
         field = fields[0]
+
+        if !field
+          return
 
         fieldType = field.ColumnSchema.type
         if ! fieldType in that._getAllowedFieldTypes()
@@ -275,10 +322,12 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         if typeof fieldValue == 'object'
           if fieldValue?.conceptName
             fieldValue = fieldValue.conceptName
-          else
-            if defaultValueFromPool?.conceptName
+          else if defaultValueFromPool?.conceptName
               fieldValue = defaultValueFromPool.conceptName
               isDefaultValue = true
+          else if fieldValue?._standard
+              fieldValue = fieldValue?._standard[1]?.text[frontendLanguage]
+              isDefaultValue = false
         else if typeof fieldValue == 'string' || typeof fieldValue == 'undefined'
           if fieldValue == '' || fieldValue == undefined
             if defaultValueFromPool?.conceptName

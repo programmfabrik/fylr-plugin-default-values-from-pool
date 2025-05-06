@@ -16,6 +16,22 @@ class DefaultValueFieldDefinitorBaseConfig extends BaseConfigPlugin
         value: value
       )
 
+    # generate fieldtypeoptions (in order to pass the used objecttype to the poolmanager)
+    fieldTypeOptions = [
+              text: $$("defaultvaluefielddefinitor.data_table.fieldtype.input")
+              value: 'input'
+            ,
+              text: $$("defaultvaluefielddefinitor.data_table.fieldtype.dante")
+              value: 'dante'
+          ]
+    # füge für jeden 
+    for ot in ez5.schema.CURRENT._objecttypes
+      objectType = new Objecttype(new Table("CURRENT", ot.table_id))
+      fieldTypeOptions.push(
+        text: $$("defaultvaluefielddefinitor.data_table.fieldtype.record") + ' (' + objectType.name() + ')'
+        value: 'record' + '|||' + objectType.name()
+      )         
+  
     # generate form with datatable
     field =
       type: CUI.Form
@@ -45,13 +61,12 @@ class DefaultValueFieldDefinitorBaseConfig extends BaseConfigPlugin
           type: CUI.Select
           text: $$("defaultvaluefielddefinitor.data_table.fieldtype.label")
           name: "fieldtype"
-          options: [
-              text: $$("defaultvaluefielddefinitor.data_table.fieldtype.input")
-              value: 'input'
-            ,
-              text: $$("defaultvaluefielddefinitor.data_table.fieldtype.dante")
-              value: 'dante'
-          ]
+          options: fieldTypeOptions
+        ,
+          form:
+            label: $$("defaultvaluefielddefinitor.data_table.fieldname_datamodel")
+          type: CUI.Input
+          name: "fieldname_datamodel"
         ,
           form:
             label: $$("defaultvaluefielddefinitor.data_table.dantevoc")
