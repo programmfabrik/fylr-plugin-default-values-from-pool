@@ -105,6 +105,8 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
         # wenn Feld einen Wert hat, dann Standardwert nicht anzeigen
         buttonClassHidden = ''
         labelClassHidden = 'show'
+        console.log "field.ColumnSchema.name", field.ColumnSchema.name
+        console.log "opts.data[field.ColumnSchema.name]", opts.data[field.ColumnSchema.name]
 
         if opts.data[field.ColumnSchema.name]
           # if field has value, show x-button and hide defaultvalue from pool
@@ -183,6 +185,7 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
                 bubble: true
 
         # Element, welches den Standardwert aus dem Pool anzeigt
+        console.log "defaultValueFromPool", defaultValueFromPool
         defaultLabelElement = new CUI.Label
                                      text: defaultValueFromPool + ' (' + $$('fylr-plugin-default-values-from-pool-default-value.splitter.hint') + ')'
                                      class: 'fylr-plugin-default-values-from-pool-default-value ' + labelClassHidden
@@ -233,6 +236,8 @@ class ez5.ShowPoolDefaultValuesInMask extends CustomMaskSplitter
           selectedNode = selectedElement[0]
         else 
           selectedNode = selectedElement
+
+        console.log "opts.data", opts.data
 
         # dante and input
         CUI.Events.listen

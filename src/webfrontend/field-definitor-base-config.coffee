@@ -38,6 +38,7 @@ class DefaultValueFieldDefinitorBaseConfig extends BaseConfigPlugin
       name: "default_value_field_definitor"
       fields: [
         type: CUI.DataTable
+        rowMove: true
         name: "data_table"
         fields: [
           form:

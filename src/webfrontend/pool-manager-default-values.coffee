@@ -1,6 +1,30 @@
 class ez5.PoolManagerDefaultValues extends ez5.PoolPlugin
 
+  findFieldSchema: (mask, fieldnameDatamodel) ->
+    # loop through all masks and find the one with the name fieldnameDatamodel == __all_fields
+    fieldSchema = false
+    maskFields = mask
+    if mask?.mask?.fields
+      maskFields = mask.mask.fields
+    for maskEntry in maskFields
+      # it is field or linkfield --> ready
+      if maskEntry.kind == 'field' || maskEntry.kind == 'link'
+        if maskEntry._full_name == fieldnameDatamodel
+          fieldSchema = maskEntry
+          return fieldSchema
+      # it is a linked-table --> recursive call
+      if maskEntry.kind == 'linked-table'
+        # recursive call
+        fieldSchema = @findFieldSchema(maskEntry, fieldnameDatamodel)
+        if fieldSchema
+          return fieldSchema
+      if fieldSchema
+        return fieldSchema
+    return fieldSchema
+
   getTabs: (tabs) ->
+    that = @
+
     # get fields from baseconfig
     baseConfig = ez5.session.getBaseConfig("plugin", "default-values-from-pool")
     config = baseConfig['DefaultValuesFromPool']['default_value_field_definitor'] || baseConfig['DefaultValuesFromPool']
@@ -70,53 +94,56 @@ class ez5.PoolManagerDefaultValues extends ez5.PoolPlugin
         ##########################################################################################
         # Objecttype-Link
         ##########################################################################################
-        if field.fieldtype.startsWith 'record' && field?.fieldname_datamodel != ''          
+        if ((field.fieldtype.startsWith ('record')) && (field?.fieldname_datamodel != '') and field.fieldname_datamodel == 'defaultvalues_linkedobject.objecttypetest') 
           objecttype = field?.objecttype
           linkedObjecttype = field?.fieldtype.split('|||')[1]
-          fieldnameDatamodel = field?.fieldname_datamodel
+          fieldnameDatamodel = field.fieldname_datamodel
+   
+          # get schemaTable
           schemaTable = ez5.schema.CURRENT._table_by_name?[objecttype]
           if !schemaTable
             console.log "schemaTable not found. field: ", field
             return
-
-          # loop through all tables and find fieldSchema
-          fieldSchema = false
+          
           _preferred_mask = schemaTable._preferred_mask
           maskFields = schemaTable._preferred_mask.fields
-        
-          for maskField in maskFields
-            if maskField?._column?.name == fieldnameDatamodel
-              fieldSchema = maskField
-              break       
+
+          # loop through all masks and find fieldSchema
+          fieldSchema = that.findFieldSchema(maskFields, fieldnameDatamodel)
           if !fieldSchema
             console.log "fieldSchema not found. field: ", field
-            return  
+            return
 
-          masks = ez5.mask.CURRENT._masks_by_table_id[schemaTable.table_id]
-          mask = false
+          availableMasks = ez5.mask.CURRENT._masks_by_table_id[schemaTable.table_id]
           # loop through all masks and find the one with the name __all_fields
-          for maskEntry in masks
+          for maskEntry in availableMasks
             if maskEntry.name.endsWith '__all_fields'
-              mask = maskEntry
+              allFieldsMask = maskEntry
               break
-          if !mask
-            mask = masks[0]
+          if !allFieldsMask
+            allFieldsMask = availableMasks[0]
+
+          console.warn "fieldSchema: ", fieldSchema
+          console.warn "allFieldsMask: ", allFieldsMask
                   
-          mask = new Mask("CURRENT", mask.mask_id)
+          maskForLinkedObject = new Mask("CURRENT", allFieldsMask.mask_id)
 
           newField =     
               type: CUI.DataFieldProxy
-              name: 'linkedObject'
-              element: (field) =>
-                  linkedObjectField = new LinkedObject(mask, fieldSchema)
-                  linkedObjectField = linkedObjectField.renderEditorInput(@_pool.data.pool.custom_data, {}, {})
+              name: 'linkedObject_' + field.fieldname + '_' + objecttype
+              element: (df) =>
+                  #console.log "df: ", df
+                  #data = df.getData()
+                  #that.opts.pool.data.pool.custom_data = data
+                  linkedObjectField = new LinkedObject(maskForLinkedObject, fieldSchema)
+                  linkedObjectField = linkedObjectField.renderEditorInput(that.opts.pool.data.pool.custom_data, {}, {})
+                  console.log "linkedObjectField: ", linkedObjectField  
                   return linkedObjectField
               form:
                label: field.label
                hint: 'Objecttype: ' + field.objecttype + ' - Fieldname: ' + field.fieldname
           fields.push newField
 
-    that = @
     tabs.push
       name: $$('defaultvaluesfrompool.pool.manager.default.values.tab.headline')
       text: $$('defaultvaluesfrompool.pool.manager.default.values.tab.headline')
